@@ -1,5 +1,4 @@
-/* styles/globals.css */
-
+/* General Styles */
 body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -12,17 +11,38 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.main {
-    flex: 1;
-    padding: 1rem;
+.title {
+    font-size: 2em;
+    color: #333;
 }
 
+.subtitle {
+    color: #666;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chart-container {
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 20px;
+}
+
+/* Table Styles */
 .table-container {
     display: flex;
+    flex-direction: column;
     align-items: flex-start;
-    gap: 1rem; /* Space between table and search bar */
+    gap: 1rem;
 }
 
 table {
@@ -38,7 +58,7 @@ table {
 th, td {
     border: 1px solid #ddd;
     padding: 12px;
-    text-align: center; /* Center align text */
+    text-align: center;
 }
 
 th {
@@ -71,6 +91,7 @@ tr:nth-child(odd) td {
     background-color: #ffffff;
 }
 
+/* Link Styles */
 a {
     color: #4CAF50;
     text-decoration: none;
@@ -82,6 +103,7 @@ a:hover {
     text-decoration: underline;
 }
 
+/* Navbar Styles */
 .navbar {
     background-color: #333;
     padding: 1rem;
@@ -114,74 +136,195 @@ a:hover {
     font-weight: bold;
 }
 
+/* Input Styles */
 input[type="text"] {
     padding: 8px 12px;
     border: 1px solid #ccc;
-    border-radius: 4px; /* Rounded corners */
-    font-size: 14px; /* Smaller font size */
+    border-radius: 4px;
+    font-size: 14px;
     width: 100%;
-    max-width: 250px; /* Limit width */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transitions */
+    max-width: 250px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 input[type="text"]::placeholder {
-    color: #aaa; /* Placeholder text color */
-    font-size: 14px; /* Match placeholder font size with input text */
+    color: #aaa;
+    font-size: 14px;
 }
 
 input[type="text"]:focus {
-    border-color: #007bff; /* Change border color on focus */
+    border-color: #007bff;
     outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Focus shadow */
-    background-color: #fff; /* Ensure background is white */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    background-color: #fff;
 }
 
-/* styles/globals.css */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+/* Date Input Styles */
+input[type="date"] {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    max-width: 250px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+    margin-left: 10px;
 }
 
-.container {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+input[type="date"]:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
-.title {
-  font-size: 2em;
-  color: #333;
+/* Button Styles */
+button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.subtitle {
-  color: #666;
+
+button:active {
+    background-color: #004494;
 }
 
-.content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+button svg {
+    width: 16px;
+    height: 16px;
 }
 
-.chart-container {
-  width: 100%;
-  max-width: 800px;
-  margin-bottom: 20px;
+/* Icons for PDF download button */
+.download-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
 }
 
-.table {
-  width: 100%;
-  border-collapse: collapse;
+/* Dropdown Styles */
+select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%;
+    max-width: 250px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.table th, .table td {
-  padding: 10px;
-  border: 1px solid #ddd;
+select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
-.table th {
-  background-color: #f4f4f4;
+select::-ms-expand {
+    display: none;
 }
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgdmlld0JveD0iMCAwIDEyIDEyIj4KPHBhdGggZD0iTTAgMjB2LTExSDEydjExSDIiIGZpbGw9IiNDRkZGIiBzdHJva2U9IiMwMDdCZiIvPjwvc3ZnPg==') no-repeat right center;
+    background-size: 12px 12px;
+}
+
+/* Filter Container */
+.filter-container {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.daily-closing-prices-container {
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%;
+    max-width: 250px;
+}
+
+.download-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: #e25555;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.download-btn:hover {
+    background-color: #d9534f;
+    cursor: pointer; /* Ensure pointer cursor on hover */
+}
+
+.download-btn:active {
+    background-color: #c9302c;
+}
+
+.download-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th, .data-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.data-table th {
+    background-color: #767fd1;
+    color: white;
+    font-weight: bold;
+}
+
+.data-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.data-table tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+.data-table tbody td:hover {
+    background-color: #f1f1f1;
+}
+
+

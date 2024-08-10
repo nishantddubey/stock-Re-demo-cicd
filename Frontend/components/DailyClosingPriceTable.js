@@ -1,38 +1,62 @@
 import React, { useState } from 'react';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
-// Component for displaying daily closing prices in a table
 const DailyClosingPricesTable = ({ data }) => {
-  // State for managing the search query
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Memoized computation of filtered data based on search query
   const filteredData = React.useMemo(() => {
-    if (!data) return []; // Return empty array if no data
-
-    // Filter data based on whether the ticker, date, or close matches the search query
+    if (!data) return [];
     return data.filter((item) =>
       item.ticker.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.date.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.close.toString().includes(searchQuery)
     );
-  }, [data, searchQuery]); // Dependencies for memoization
+  }, [data, searchQuery]);
 
-  // If no data is available, display a message
+  const downloadPDF = () => {
+    const doc = new jsPDF();
+    doc.text('Daily Closing Prices', 20, 10);
+
+    const tableColumn = ["Ticker", "Date", "Closing Price"];
+    const tableRows = [];
+
+    filteredData.forEach(item => {
+      const itemData = [
+        item.ticker,
+        item.date,
+        item.close,
+      ];
+      tableRows.push(itemData);
+    });
+
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 20,
+    });
+
+    doc.save('daily_closing_prices.pdf');
+  };
+
   if (!data || data.length === 0) {
     return <p>No data available</p>;
   }
 
   return (
     <div>
-      {/* Search input field */}
-      <input
-        type="text"
-        placeholder="Search..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)} // Update search query state on input change
-        style={{ marginBottom: '10px' }}
-      />
-      {/* Table to display filtered data */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{ padding: '8px 12px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '14px', width: '100%', maxWidth: '250px' }}
+        />
+        <button onClick={downloadPDF} style={{ padding: '8px 12px', border: 'none', borderRadius: '4px', backgroundColor: '#007bff', color: 'white', fontSize: '14px', cursor: 'pointer', marginLeft: '10px' }}>
+          Download PDF
+        </button>
+      </div>
       <table>
         <thead>
           <tr>

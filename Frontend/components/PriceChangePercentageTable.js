@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const PriceChangePercentagesTable = ({ data }) => {
-  // State for sorting configuration with initial values
   const [sortConfig, setSortConfig] = useState({ key: 'ticker', direction: 'ascending' });
-  // State for search query
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Filtered data based on search query
   const filteredData = React.useMemo(() => {
     if (!data) return [];
     return data.filter((item) =>
@@ -17,7 +16,6 @@ const PriceChangePercentagesTable = ({ data }) => {
     );
   }, [data, searchQuery]);
 
-  // Sorted data based on sort configuration
   const sortedData = React.useMemo(() => {
     const sortedArray = [...filteredData];
     sortedArray.sort((a, b) => {
@@ -32,7 +30,6 @@ const PriceChangePercentagesTable = ({ data }) => {
     return sortedArray;
   }, [filteredData, sortConfig]);
 
-  // Handle sorting logic for table headers
   const handleSort = (key) => {
     let direction = 'ascending';
     if (sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -41,26 +38,56 @@ const PriceChangePercentagesTable = ({ data }) => {
     setSortConfig({ key, direction });
   };
 
-  // Render message if no data is available
+  const downloadPDF = () => {
+    const doc = new jsPDF();
+    doc.text('Price Change Percentages', 20, 10);
+
+    const tableColumn = ["Ticker", "Date", "Change Period", "Percentage Change"];
+    const tableRows = [];
+
+    sortedData.forEach(item => {
+      const itemData = [
+        item.ticker,
+        item.date,
+        item.change_period,
+        item.percentage_change,
+      ];
+      tableRows.push(itemData);
+    });
+
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 20,
+    });
+
+    doc.save('price_change_percentages.pdf');
+  };
+
   if (!data || data.length === 0) {
     return <p>No data available</p>;
   }
 
   return (
     <div>
-      {/* Search input field */}
-      <input
-        type="text"
-        placeholder="Search..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        style={{ marginBottom: '10px' }}
-      />
-      {/* Table displaying the data */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{ padding: '8px 12px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '14px', width: '100%', maxWidth: '250px' }}
+        />
+        <button
+          onClick={downloadPDF}
+          style={{ padding: '8px 12px', border: 'none', borderRadius: '4px', backgroundColor: '#007bff', color: 'white', fontSize: '14px', cursor: 'pointer' }}
+        >
+          Download PDF
+        </button>
+      </div>
       <table>
         <thead>
           <tr>
-            {/* Table headers with sorting functionality */}
             <th onClick={() => handleSort('ticker')}>
               Ticker {sortConfig.key === 'ticker' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : ''}
             </th>
@@ -76,7 +103,6 @@ const PriceChangePercentagesTable = ({ data }) => {
           </tr>
         </thead>
         <tbody>
-          {/* Displaying sorted and filtered data */}
           {sortedData.map((item) => (
             <tr key={item.id}>
               <td>{item.ticker}</td>

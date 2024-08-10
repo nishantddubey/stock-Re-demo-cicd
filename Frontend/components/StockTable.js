@@ -1,8 +1,13 @@
 import { useState } from 'react';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const StockTable = ({ data }) => {
   const [sortConfig, setSortConfig] = useState({ key: 'ticker', direction: 'ascending' });
   const [searchTerm, setSearchTerm] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [selectedTicker, setSelectedTicker] = useState('');
 
   const getSortFunction = (key) => {
     switch (key) {
@@ -28,7 +33,10 @@ const StockTable = ({ data }) => {
   });
 
   const filteredData = sortedData.filter((item) =>
-    item.ticker.toLowerCase().includes(searchTerm.toLowerCase())
+    item.ticker.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (!startDate || new Date(item.date) >= new Date(startDate)) &&
+    (!endDate || new Date(item.date) <= new Date(endDate)) &&
+    (!selectedTicker || item.ticker === selectedTicker)
   );
 
   const handleSort = (key) => {
@@ -39,14 +47,69 @@ const StockTable = ({ data }) => {
     setSortConfig({ key, direction });
   };
 
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+    doc.autoTable({
+      head: [['Ticker', 'Date', 'Open', 'High', 'Low', 'Close', 'Volume']],
+      body: filteredData.map(item => [
+        item.ticker,
+        item.date,
+        item.open,
+        item.high,
+        item.low,
+        item.close,
+        item.volume
+      ]),
+    });
+    doc.save('stock-data.pdf');
+  };
+
+  const uniqueTickers = Array.from(new Set(data.map(item => item.ticker)));
+
   return (
     <div>
-      <input
-        type="text"
-        placeholder="Search by ticker..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
+      <div className="filter-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <input
+            type="text"
+            placeholder="Search by ticker..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+            style={{ padding: '8px 12px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '14px', width: '100%', maxWidth: '250px' }}
+          />
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="date-input"
+            style={{ padding: '8px 12px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '14px', marginLeft: '10px', width: '250px' }}
+          />
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="date-input"
+            style={{ padding: '8px 12px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '14px', marginLeft: '10px', width: '250px' }}
+          />
+          <select
+            value={selectedTicker}
+            onChange={(e) => setSelectedTicker(e.target.value)}
+            className="ticker-select"
+            style={{ padding: '8px 12px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '14px', marginLeft: '10px' }}
+          >
+            <option value="">All Stocks</option>
+            {uniqueTickers.map((ticker) => (
+              <option key={ticker} value={ticker}>
+                {ticker}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button onClick={handleDownloadPDF} className="download-button" style={{ padding: '8px 12px', border: 'none', borderRadius: '4px', backgroundColor: '#007bff', color: 'white', fontSize: '14px', cursor: 'pointer' }}>
+          Download PDF
+        </button>
+      </div>
       <table>
         <thead>
           <tr>
