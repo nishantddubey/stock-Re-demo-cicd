@@ -1,0 +1,4 @@
+apiVersion: v2
+name: monitoring-stack
+description: A Helm chart for deploying Prometheus, Alertmanager, Grafana, and Next.js
+version: 0.1.0
