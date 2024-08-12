@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: nextjs-container
-        image: nishantddubey/stock-frontend:1
+        image: nishantddubey/stock-frontend:2
         ports:
         - containerPort: 3000
         resources:
