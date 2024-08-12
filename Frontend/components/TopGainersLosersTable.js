@@ -7,29 +7,21 @@ const TopGainersLosersTable = ({ data }) => {
     return <p>No data available</p>;
   }
 
-  const getRowStyle = (gainers_or_losers) => {
-    return gainers_or_losers === 'Gainers' ? { color: 'green' } : { color: 'red' };
+  // Dynamically extract columns from the first data object
+  const columns = Object.keys(data[0]);
+
+  const getRowStyle = (entry) => {
+    return entry.gainers_or_losers === 'Gainers' ? { color: 'green' } : { color: 'red' };
   };
 
   const downloadPDF = () => {
     const doc = new jsPDF();
     doc.text('Top Gainers and Losers', 20, 10);
 
-    const tableColumn = ["Ticker", "Date", "Gainers or Losers", "Percentage Change"];
-    const tableRows = [];
-
-    data.forEach(entry => {
-      const entryData = [
-        entry.ticker,
-        entry.date,
-        entry.gainers_or_losers,
-        entry.percentage_change,
-      ];
-      tableRows.push(entryData);
-    });
+    const tableRows = data.map(entry => columns.map(column => entry[column]));
 
     doc.autoTable({
-      head: [tableColumn],
+      head: [columns],
       body: tableRows,
       startY: 20,
     });
@@ -50,19 +42,19 @@ const TopGainersLosersTable = ({ data }) => {
       <table>
         <thead>
           <tr>
-            <th>Ticker</th>
-            <th>Date</th>
-            <th>Gainers or Losers</th>
-            <th>Percentage Change</th>
+            {columns.map((column) => (
+              <th key={column}>
+                {column.charAt(0).toUpperCase() + column.slice(1)}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
-          {data.map((entry) => (
-            <tr key={`${entry.ticker}-${entry.date}-${entry.gainers_or_losers}`} style={getRowStyle(entry.gainers_or_losers)}>
-              <td>{entry.ticker}</td>
-              <td>{entry.date}</td>
-              <td>{entry.gainers_or_losers}</td>
-              <td>{entry.percentage_change}</td>
+          {data.map((entry, index) => (
+            <tr key={index} style={getRowStyle(entry)}>
+              {columns.map((column) => (
+                <td key={column}>{entry[column]}</td>
+              ))}
             </tr>
           ))}
         </tbody>

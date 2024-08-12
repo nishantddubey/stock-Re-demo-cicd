@@ -3,30 +3,34 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
 const PriceChangePercentagesTable = ({ data }) => {
-  const [sortConfig, setSortConfig] = useState({ key: 'ticker', direction: 'ascending' });
+  const [sortConfig, setSortConfig] = useState({ key: '', direction: 'ascending' });
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Dynamically extract columns from the first data object
+  const columns = data && data.length > 0 ? Object.keys(data[0]) : [];
 
   const filteredData = React.useMemo(() => {
     if (!data) return [];
     return data.filter((item) =>
-      item.ticker.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.date.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.change_period.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.percentage_change.toString().includes(searchQuery)
+      columns.some(column =>
+        item[column]?.toString().toLowerCase().includes(searchQuery.toLowerCase())
+      )
     );
-  }, [data, searchQuery]);
+  }, [data, searchQuery, columns]);
 
   const sortedData = React.useMemo(() => {
     const sortedArray = [...filteredData];
-    sortedArray.sort((a, b) => {
-      if (a[sortConfig.key] < b[sortConfig.key]) {
-        return sortConfig.direction === 'ascending' ? -1 : 1;
-      }
-      if (a[sortConfig.key] > b[sortConfig.key]) {
-        return sortConfig.direction === 'ascending' ? 1 : -1;
-      }
-      return 0;
-    });
+    if (sortConfig.key) {
+      sortedArray.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
     return sortedArray;
   }, [filteredData, sortConfig]);
 
@@ -42,21 +46,10 @@ const PriceChangePercentagesTable = ({ data }) => {
     const doc = new jsPDF();
     doc.text('Price Change Percentages', 20, 10);
 
-    const tableColumn = ["Ticker", "Date", "Change Period", "Percentage Change"];
-    const tableRows = [];
-
-    sortedData.forEach(item => {
-      const itemData = [
-        item.ticker,
-        item.date,
-        item.change_period,
-        item.percentage_change,
-      ];
-      tableRows.push(itemData);
-    });
+    const tableRows = sortedData.map(item => columns.map(column => item[column]));
 
     doc.autoTable({
-      head: [tableColumn],
+      head: [columns],
       body: tableRows,
       startY: 20,
     });
@@ -88,27 +81,19 @@ const PriceChangePercentagesTable = ({ data }) => {
       <table>
         <thead>
           <tr>
-            <th onClick={() => handleSort('ticker')}>
-              Ticker {sortConfig.key === 'ticker' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : ''}
-            </th>
-            <th onClick={() => handleSort('date')}>
-              Date {sortConfig.key === 'date' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : ''}
-            </th>
-            <th onClick={() => handleSort('change_period')}>
-              Change Period {sortConfig.key === 'change_period' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : ''}
-            </th>
-            <th onClick={() => handleSort('percentage_change')}>
-              Percentage Change {sortConfig.key === 'percentage_change' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : ''}
-            </th>
+            {columns.map((column) => (
+              <th key={column} onClick={() => handleSort(column)}>
+                {column.charAt(0).toUpperCase() + column.slice(1)} {sortConfig.key === column ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : ''}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
-          {sortedData.map((item) => (
-            <tr key={item.id}>
-              <td>{item.ticker}</td>
-              <td>{item.date}</td>
-              <td>{item.change_period}</td>
-              <td>{item.percentage_change}</td>
+          {sortedData.map((item, index) => (
+            <tr key={index}>
+              {columns.map((column) => (
+                <td key={column}>{item[column]}</td>
+              ))}
             </tr>
           ))}
         </tbody>

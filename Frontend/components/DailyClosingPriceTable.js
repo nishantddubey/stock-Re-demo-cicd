@@ -5,33 +5,26 @@ import 'jspdf-autotable';
 const DailyClosingPricesTable = ({ data }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Dynamically get all the keys (columns) from the first data object
+  const columns = data && data.length > 0 ? Object.keys(data[0]) : [];
+
   const filteredData = React.useMemo(() => {
     if (!data) return [];
     return data.filter((item) =>
-      item.ticker.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.date.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.close.toString().includes(searchQuery)
+      columns.some(column =>
+        item[column].toString().toLowerCase().includes(searchQuery.toLowerCase())
+      )
     );
-  }, [data, searchQuery]);
+  }, [data, searchQuery, columns]);
 
   const downloadPDF = () => {
     const doc = new jsPDF();
     doc.text('Daily Closing Prices', 20, 10);
 
-    const tableColumn = ["Ticker", "Date", "Closing Price"];
-    const tableRows = [];
-
-    filteredData.forEach(item => {
-      const itemData = [
-        item.ticker,
-        item.date,
-        item.close,
-      ];
-      tableRows.push(itemData);
-    });
+    const tableRows = filteredData.map(item => columns.map(column => item[column]));
 
     doc.autoTable({
-      head: [tableColumn],
+      head: [columns],
       body: tableRows,
       startY: 20,
     });
@@ -60,17 +53,17 @@ const DailyClosingPricesTable = ({ data }) => {
       <table>
         <thead>
           <tr>
-            <th>Ticker</th>
-            <th>Date</th>
-            <th>Closing Price</th>
+            {columns.map((column) => (
+              <th key={column}>{column.charAt(0).toUpperCase() + column.slice(1)}</th>
+            ))}
           </tr>
         </thead>
         <tbody>
-          {filteredData.map((item) => (
-            <tr key={item.id}>
-              <td>{item.ticker}</td>
-              <td>{item.date}</td>
-              <td>{item.close}</td>
+          {filteredData.map((item, index) => (
+            <tr key={index}>
+              {columns.map((column) => (
+                <td key={column}>{item[column]}</td>
+              ))}
             </tr>
           ))}
         </tbody>

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// const BASE_URL = 'http://192.168.49.2:30001/api';
-const BASE_URL = 'http://localhost:8000/api';
+const BASE_URL = 'http://192.168.49.2:30001/api';
+// const BASE_URL = 'http://localhost:8000/api';
 
 
 // Fetch the CSRF token

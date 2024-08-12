@@ -9,28 +9,17 @@ const TodaysDataTable = ({ data }) => {
 
   const dayName = yesterday.toLocaleDateString('en-US', { weekday: 'long' });
 
+  // Dynamically extract columns from the first data object
+  const columns = data && data.length > 0 ? Object.keys(data[0]) : [];
+
   const downloadPDF = () => {
     const doc = new jsPDF();
     doc.text(`Today's Data (${dayName})`, 20, 10);
 
-    const tableColumn = ["Ticker", "Date", "Open", "High", "Low", "Close", "Volume"];
-    const tableRows = [];
-
-    data.forEach(item => {
-      const itemData = [
-        item.ticker,
-        item.date,
-        item.open,
-        item.high,
-        item.low,
-        item.close,
-        item.volume,
-      ];
-      tableRows.push(itemData);
-    });
+    const tableRows = data.map(item => columns.map(column => item[column]));
 
     doc.autoTable({
-      head: [tableColumn],
+      head: [columns],
       body: tableRows,
       startY: 20,
     });
@@ -55,25 +44,19 @@ const TodaysDataTable = ({ data }) => {
       <table>
         <thead>
           <tr>
-            <th>Ticker</th>
-            <th>Date</th>
-            <th>Open</th>
-            <th>High</th>
-            <th>Low</th>
-            <th>Close</th>
-            <th>Volume</th>
+            {columns.map((column) => (
+              <th key={column}>
+                {column.charAt(0).toUpperCase() + column.slice(1)}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
-          {data.map((item) => (
-            <tr key={item.id}>
-              <td>{item.ticker}</td>
-              <td>{item.date}</td>
-              <td>{item.open}</td>
-              <td>{item.high}</td>
-              <td>{item.low}</td>
-              <td>{item.close}</td>
-              <td>{item.volume}</td>
+          {data.map((item, index) => (
+            <tr key={index}>
+              {columns.map((column) => (
+                <td key={column}>{item[column]}</td>
+              ))}
             </tr>
           ))}
         </tbody>
