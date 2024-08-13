@@ -4,16 +4,19 @@ on:
   push:
     branches:
       - main
-    # paths:
-    #   - 'backend/**'
-    #   - 'Frontend/**'
-    #   - 'stock-app/**'
-    #   - '.github/workflows/**'
-
+    paths:
+      - 'backend/**'
+      - 'Frontend/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - 'Frontend/**'
 
 jobs:
-  build-and-deploy-backend:
-    if: contains(github.event.head_commit.message, 'backend') || github.event_name == 'workflow_dispatch'
+  build-and-push-backend:
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, 'backend')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -37,14 +40,8 @@ jobs:
           docker build -t nishantddubey/stock-backend:${{ env.TAG }} ./backend
           docker push nishantddubey/stock-backend:${{ env.TAG }}
 
-      - name: Deploy Backend using Helm
-        run: |
-          helm upgrade --install stock-app ./stock-app \
-            --set backend.image.repository=nishantddubey/stock-backend \
-            --set backend.image.tag=${{ env.TAG }}
-
-  build-and-deploy-frontend:
-    if: contains(github.event.head_commit.message, 'Frontend') || github.event_name == 'workflow_dispatch'
+  build-and-push-frontend:
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, 'Frontend')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -67,20 +64,3 @@ jobs:
         run: |
           docker build -t nishantddubey/stock-frontend:${{ env.TAG }} ./Frontend
           docker push nishantddubey/stock-frontend:${{ env.TAG }}
-
-      - name: Deploy Frontend using Helm
-        run: |
-          helm upgrade --install stock-app ./stock-app \
-            --set frontend.image.repository=nishantddubey/stock-frontend \
-            --set frontend.image.tag=${{ env.TAG }}
-
-  upgrade-helm:
-    if: github.event_name == 'push' && !contains(github.event.head_commit.message, 'backend') && !contains(github.event.head_commit.message, 'Frontend')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Deploy Helm Chart
-        run: |
-          helm upgrade --install stock-app ./stock-app
