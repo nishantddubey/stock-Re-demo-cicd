@@ -1,0 +1,23 @@
+replicaCount: 2
+
+image:
+  repository: nishantddubey/stock-backend
+  tag: "5"
+
+service:
+  type: NodePort
+  port: 8000
+  targetPort: 8000
+  nodePort: 30001
+
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "250m"
+  limits:
+    memory: "1Gi"
+    cpu: "500m"
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

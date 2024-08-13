@@ -1,0 +1,23 @@
+replicaCount: 2
+
+image:
+  repository: nishantddubey/stock-frontend
+  tag: "3"
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 3000
+  nodePort: 30000
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "250m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ include "frontend.fullname" . }}
 spec:
-  replicas: 2
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: {{ include "frontend.name" . }}
@@ -14,13 +14,13 @@ spec:
     spec:
       containers:
         - name: nextjs-container
-          image: nishantddubey/stock-frontend:3
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag | default "latest" }}
           ports:
-            - containerPort: 3000
+            - containerPort: {{ .Values.service.targetPort }}
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "250m"
+              memory: {{ .Values.resources.requests.memory }}
+              cpu: {{ .Values.resources.requests.cpu }}
             limits:
-              memory: "512Mi"
-              cpu: "500m"
+              memory: {{ .Values.resources.limits.memory }}
+              cpu: {{ .Values.resources.limits.cpu }}
