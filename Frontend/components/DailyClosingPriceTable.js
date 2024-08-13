@@ -23,6 +23,7 @@ const DailyClosingPricesTable = ({ data }) => {
 
     const tableRows = filteredData.map(item => columns.map(column => item[column]));
 
+    
     doc.autoTable({
       head: [columns],
       body: tableRows,
