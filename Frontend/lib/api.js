@@ -108,3 +108,5 @@ export const fetchTodaysData = async () => {
         throw error;
     }
 };
+
+
