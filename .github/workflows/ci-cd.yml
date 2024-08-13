@@ -7,12 +7,18 @@ on:
     paths:
       - 'backend/**'
       - 'Frontend/**'
-      - 'stock-app/**'
+      - '.github/workflows/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - 'Frontend/**'
+      - '.github/workflows/**'
 
 jobs:
-  build-and-deploy-backend:
-    if: contains(github.event.head_commit.message, 'backend') || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
+  build-and-deploy:
+    runs-on: self-hosted  # Ensure it runs on your local self-hosted runner
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -20,65 +26,34 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Login to Docker Hub
+      - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Generate Docker Tag
-        id: vars
-        run: echo "TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-
-      - name: Build and push Backend Docker image
+      - name: Build and push backend image
+        if: contains(github.event.head_commit.message, 'backend')
         run: |
-          docker build -t nishantddubey/stock-backend:${{ env.TAG }} ./backend
-          docker push nishantddubey/stock-backend:${{ env.TAG }}
+          docker buildx build --platform linux/amd64 \
+            -t ${{ secrets.DOCKER_USERNAME }}/stock-backend:$GITHUB_SHA \
+            -f backend/Dockerfile backend/ --push
 
-      - name: Deploy Backend using Helm
+      - name: Build and push frontend image
+        if: contains(github.event.head_commit.message, 'Frontend')
         run: |
-          helm upgrade --install stock-app ./stock-app \
-            --set backend.image.repository=nishantddubey/stock-backend \
-            --set backend.image.tag=${{ env.TAG }}
+          docker buildx build --platform linux/amd64 \
+            -t ${{ secrets.DOCKER_USERNAME }}/stock-frontend:$GITHUB_SHA \
+            -f Frontend/Dockerfile Frontend/ --push
 
-  build-and-deploy-frontend:
-    if: contains(github.event.head_commit.message, 'Frontend') || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Generate Docker Tag
-        id: vars
-        run: echo "TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-
-      - name: Build and push Frontend Docker image
+      - name: Set up kubectl context
         run: |
-          docker build -t nishantddubey/stock-frontend:${{ env.TAG }} ./Frontend
-          docker push nishantddubey/stock-frontend:${{ env.TAG }}
+          kubectl config use-context minikube
 
-      - name: Deploy Frontend using Helm
+      - name: Deploy to Minikube with Helm
         run: |
           helm upgrade --install stock-app ./stock-app \
-            --set frontend.image.repository=nishantddubey/stock-frontend \
-            --set frontend.image.tag=${{ env.TAG }}
-
-  upgrade-helm:
-    if: github.event_name == 'push' && !contains(github.event.head_commit.message, 'backend') && !contains(github.event.head_commit.message, 'Frontend')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Deploy Helm Chart
-        run: |
-          helm upgrade --install stock-app ./stock-app
+            --set backend.image.repository=${{ secrets.DOCKER_USERNAME }}/stock-backend \
+            --set backend.image.tag=$GITHUB_SHA \
+            --set frontend.image.repository=${{ secrets.DOCKER_USERNAME }}/stock-frontend \
+            --set frontend.image.tag=$GITHUB_SHA
