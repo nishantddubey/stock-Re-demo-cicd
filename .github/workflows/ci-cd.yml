@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'backend/**'
-      - 'Frontend/**'
-      - 'stock-app/**'
-      - '.github/workflows/**'
+    # paths:
+    #   - 'backend/**'
+    #   - 'Frontend/**'
+    #   - 'stock-app/**'
+    #   - '.github/workflows/**'
 
 
 jobs:
