@@ -6,9 +6,8 @@ on:
       - main
     paths:
       - 'backend/**'
-      - 'frontend/**'
+      - 'Frontend/**'
       - 'stock-app/**'
-  workflow_dispatch:
 
 jobs:
   build-and-deploy-backend:
@@ -43,7 +42,7 @@ jobs:
             --set backend.image.tag=${{ env.TAG }}
 
   build-and-deploy-frontend:
-    if: contains(github.event.head_commit.message, 'frontend') || github.event_name == 'workflow_dispatch'
+    if: contains(github.event.head_commit.message, 'Frontend') || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -64,7 +63,7 @@ jobs:
 
       - name: Build and push Frontend Docker image
         run: |
-          docker build -t nishantddubey/stock-frontend:${{ env.TAG }} ./frontend
+          docker build -t nishantddubey/stock-frontend:${{ env.TAG }} ./Frontend
           docker push nishantddubey/stock-frontend:${{ env.TAG }}
 
       - name: Deploy Frontend using Helm
@@ -74,7 +73,7 @@ jobs:
             --set frontend.image.tag=${{ env.TAG }}
 
   upgrade-helm:
-    if: github.event_name == 'push' && !contains(github.event.head_commit.message, 'backend') && !contains(github.event.head_commit.message, 'frontend')
+    if: github.event_name == 'push' && !contains(github.event.head_commit.message, 'backend') && !contains(github.event.head_commit.message, 'Frontend')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
