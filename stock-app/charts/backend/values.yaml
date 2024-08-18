@@ -1,8 +1,8 @@
 replicaCount: 2
 
 image:
-  repository: nishantddubey/stock-backend
-  tag: "5"
+  repository: nishantddubey/backend-app
+  tag: "6"
 
 service:
   type: NodePort

@@ -140,13 +140,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS (Cross-Origin Resource Sharing) settings
 CORS_ALLOWED_ORIGINS = [
-    # "http://192.168.49.2:30000",
+    "http://192.168.49.2:30000",
     "http://localhost:3000",
 ]
 
 # CSRF (Cross-Site Request Forgery) settings
 CSRF_TRUSTED_ORIGINS = [
-    # "http://192.168.49.2:30000", 
+    "http://192.168.49.2:30000", 
      "http://localhost:3000", # Change this to your Next.js URL
 ]
 CORS_ALLOW_CREDENTIALS = True  # If you need to allow cookies/auth

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: mysql-container
-          image: nishantddubey/stock-database:1     #nishantddubey/stock-db:latest previous databse
+          image: nishantddubey/stock-database:1     #previous databse
           ports:
             - containerPort: 3306
           volumeMounts:

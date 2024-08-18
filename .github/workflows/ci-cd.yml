@@ -24,8 +24,9 @@ jobs:
       - name: Build and push backend Docker image
         run: |
           cd backend
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/backend-app:${{ github.sha }} .
-          docker push ${{ secrets.DOCKER_USERNAME }}/backend-app:${{ github.sha }}
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-5)
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/backend-app:$SHORT_SHA .
+          docker push ${{ secrets.DOCKER_USERNAME }}/backend-app:$SHORT_SHA
 
   build-frontend:
     runs-on: ubuntu-latest
@@ -45,5 +46,6 @@ jobs:
       - name: Build and push frontend Docker image
         run: |
           cd Frontend
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend-app:${{ github.sha }} .
-          docker push ${{ secrets.DOCKER_USERNAME }}/frontend-app:${{ github.sha }}
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-5)
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend-app:$SHORT_SHA .
+          docker push ${{ secrets.DOCKER_USERNAME }}/frontend-app:$SHORT_SHA
