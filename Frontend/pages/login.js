@@ -48,7 +48,7 @@ const Login = ({ csrfToken }) => {
   return (
     <div>
       <h2 className={styles.welcome}>
-        Welcome Back! Please log in to access your Stock Monitoring Dashboard.
+        Welcome Back! Please log in to access your Stock Monitoring Dashboard. updated
       </h2>
       <div className={styles.container}>
         <div className={styles.formContainer}>
