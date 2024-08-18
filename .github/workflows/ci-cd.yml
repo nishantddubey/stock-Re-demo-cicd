@@ -3,7 +3,7 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - deployment  # Specify the branch to monitor, e.g., 'main'
+      - main  # Specify the branch to monitor, e.g., 'main'
 
 jobs:
   build-backend:
@@ -36,8 +36,8 @@ jobs:
       - name: Upgrade Helm chart for backend
         run: |
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-5)
-          helm upgrade stock-app /home/sigmoid/Desktop/stock-app/stock-monitoring-system/stock-app/charts/backend \
-            --set image.tag=$SHORT_SHA 
+          helm upgrade stock-app /home/sigmoid/Desktop/stock-app/stock-monitoring-system/stock-app \
+            --set backend.image.tag=$SHORT_SHA \
 
   build-frontend:
     runs-on: [self-hosted]  # Use the self-hosted runner
@@ -64,5 +64,5 @@ jobs:
       - name: Upgrade Helm chart for frontend
         run: |
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-5)
-          helm upgrade stock-app /home/sigmoid/Desktop/stock-app/stock-monitoring-system/stock-app/charts/frontend \
-            --set image.tag=$SHORT_SHA 
+          helm upgrade stock-app /home/sigmoid/Desktop/stock-app/stock-monitoring-system/stock-app \
+            --set frontend.image.tag=$SHORT_SHA \
