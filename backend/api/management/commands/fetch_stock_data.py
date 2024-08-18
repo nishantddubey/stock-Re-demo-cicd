@@ -22,7 +22,7 @@ class Command(BaseCommand):
                 # Create a Ticker object for each ticker
                 stock = yf.Ticker(ticker)
                 # Fetch historical data for the past day
-                data = stock.history(period="1d", interval="1d")  
+                data = stock.history(period="1y", interval="1d")  
                 stock_data[ticker] = data
             return stock_data
 
