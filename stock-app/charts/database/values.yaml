@@ -1,2 +1,18 @@
-nameOverride: ""
-fullnameOverride: ""
+replicaCount: 1
+
+image:
+  repository: nishantddubey/stock-database
+  tag: "1"
+
+service:
+  type: ClusterIP
+  port: 5432
+  targetPort: 5432
+
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "250m"
+  limits:
+    memory: "1Gi"
+    cpu: "500m"
