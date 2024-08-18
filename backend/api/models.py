@@ -10,7 +10,6 @@ class Stock(models.Model):
     close = models.FloatField()  # Closing price of the stock
     volume = models.BigIntegerField()  # Trading volume
 
-
     class Meta:
         db_table = 'stocks'  # Name of the database table
         indexes = [
