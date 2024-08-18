@@ -24,7 +24,6 @@ class DailyClosingPrice(models.Model):
     ticker = models.CharField(max_length=10)  # Stock ticker symbol
     date = models.DateField()  # Date of the stock data
     close = models.FloatField()  # Closing price of the stock
-    name = models.CharField(max_length=10,default="Nishant")
     class Meta:
         db_table = 'daily_closing_price'  # Name of the database table
         indexes = [
@@ -32,7 +31,7 @@ class DailyClosingPrice(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.ticker} - {self.date} - {self.close} - {self.name}"  # String representation of the object
+        return f"{self.ticker} - {self.date} - {self.close}"  # String representation of the object
 
 # Model for storing price change percentages over different periods
 class PriceChangePercentage(models.Model):
