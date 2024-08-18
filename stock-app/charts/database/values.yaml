@@ -3,11 +3,12 @@ replicaCount: 1
 image:
   repository: nishantddubey/stock-database
   tag: "1"
+  pullPolicy: IfNotPresent  # Add this line to specify when the image should be pulled
 
 service:
   type: ClusterIP
-  port: 5432
-  targetPort: 5432
+  port: 3306
+  targetPort: 3306
 
 resources:
   requests:
