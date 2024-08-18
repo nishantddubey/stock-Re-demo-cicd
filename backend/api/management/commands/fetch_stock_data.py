@@ -21,7 +21,7 @@ class Command(BaseCommand):
             for ticker in tickers:
                 # Create a Ticker object for each ticker
                 stock = yf.Ticker(ticker)
-                # Fetch historical data for the past day
+                # Fetch historical data for the past year
                 data = stock.history(period="1y", interval="1d")  
                 stock_data[ticker] = data
             return stock_data
@@ -33,10 +33,10 @@ class Command(BaseCommand):
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 ticker VARCHAR(10),
                 date DATETIME,
-                open FLOAT,
-                high FLOAT,
-                low FLOAT,
-                close FLOAT,
+                open DECIMAL(10, 2),
+                high DECIMAL(10, 2),
+                low DECIMAL(10, 2),
+                close DECIMAL(10, 2),
                 volume BIGINT
             )
             """
