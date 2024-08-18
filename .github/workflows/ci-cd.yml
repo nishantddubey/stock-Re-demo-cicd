@@ -3,7 +3,7 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - main  # Specify the branch to monitor, e.g., 'main'
+      - deployment  # Specify the branch to monitor, e.g., 'main'
 
 jobs:
   build-backend:
@@ -28,6 +28,17 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/backend-app:$SHORT_SHA .
           docker push ${{ secrets.DOCKER_USERNAME }}/backend-app:$SHORT_SHA
 
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: 'v3.8.0'  # Specify the Helm version you need
+
+      - name: Upgrade Helm chart for backend
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-5)
+          helm upgrade stock-app /home/sigmoid/Desktop/stock-app/stock-monitoring-system/stock-app/charts/backend \
+            --set image.tag=$SHORT_SHA 
+
   build-frontend:
     runs-on: [self-hosted]  # Use the self-hosted runner
     steps:
@@ -49,3 +60,9 @@ jobs:
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-5)
           docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend-app:$SHORT_SHA .
           docker push ${{ secrets.DOCKER_USERNAME }}/frontend-app:$SHORT_SHA
+
+      - name: Upgrade Helm chart for frontend
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-5)
+          helm upgrade stock-app /home/sigmoid/Desktop/stock-app/stock-monitoring-system/stock-app/charts/frontend \
+            --set image.tag=$SHORT_SHA 
