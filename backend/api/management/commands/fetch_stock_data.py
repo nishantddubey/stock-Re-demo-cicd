@@ -59,6 +59,13 @@ class Command(BaseCommand):
 
             for ticker, data in stock_data.items():
                 for date, row in data.iterrows():
+                    # Round values to 2 decimal places
+                    open_price = round(row['Open'], 2)
+                    high_price = round(row['High'], 2)
+                    low_price = round(row['Low'], 2)
+                    close_price = round(row['Close'], 2)
+                    volume = round(row['Volume'])  # Volume typically doesn't need decimal places
+
                     # Delete existing data for the same date and ticker
                     cursor.execute(delete_query, (date, ticker))
 
@@ -66,11 +73,11 @@ class Command(BaseCommand):
                     cursor.execute(insert_query, (
                         ticker,
                         date,
-                        row['Open'],
-                        row['High'],
-                        row['Low'],
-                        row['Close'],
-                        row['Volume']
+                        open_price,
+                        high_price,
+                        low_price,
+                        close_price,
+                        volume
                     ))
 
         # Fetch stock data for the specified tickers
