@@ -21,19 +21,19 @@ def calculate_change(df):
 
     if num_days >= 2:
         # Calculate the 24-hour percentage change
-        changes['24_hours'] = (df['close'].pct_change().iloc[-1] * 100) if num_days > 1 else None
+        changes['24_hours'] = round((df['close'].pct_change().iloc[-1] * 100), 2) if num_days > 1 else None
         
         # Calculate the 30-day percentage change
         if num_days >= 30:
-            changes['30_days'] = ((df['close'].iloc[-1] - df['close'].iloc[-30]) / df['close'].iloc[-30] * 100)
+            changes['30_days'] = round(((df['close'].iloc[-1] - df['close'].iloc[-30]) / df['close'].iloc[-30] * 100), 2)
         else:
-            changes['30_days'] = ((df['close'].iloc[-1] - df['close'].iloc[0]) / df['close'].iloc[0] * 100) if num_days > 1 else None
+            changes['30_days'] = round(((df['close'].iloc[-1] - df['close'].iloc[0]) / df['close'].iloc[0] * 100), 2) if num_days > 1 else None
         
         # Calculate the 1-year percentage change
         if num_days >= 252:  # Assuming 252 trading days in a year
-            changes['1_year'] = ((df['close'].iloc[-1] - df['close'].iloc[-252]) / df['close'].iloc[-252] * 100)
+            changes['1_year'] = round(((df['close'].iloc[-1] - df['close'].iloc[-252]) / df['close'].iloc[-252] * 100), 2)
         else:
-            changes['1_year'] = ((df['close'].iloc[-1] - df['close'].iloc[0]) / df['close'].iloc[0] * 100) if num_days > 1 else None
+            changes['1_year'] = round(((df['close'].iloc[-1] - df['close'].iloc[0]) / df['close'].iloc[0] * 100), 2) if num_days > 1 else None
     else:
         # If there are fewer than 2 days of data, set changes to None
         changes.update({'24_hours': None, '30_days': None, '1_year': None})
@@ -133,7 +133,7 @@ def store_kpis_to_db(kpis):
             cursor.execute(insert_query, (
                 row['ticker'],
                 row['date'],
-                row['close']
+                round(row['close'], 2)  # Round the value
             ))
 
         # Insert price change percentage data for 24 hours, 30 days, and 1 year
@@ -147,21 +147,21 @@ def store_kpis_to_db(kpis):
                     row['ticker'],
                     today,
                     '24_hours',
-                    row['24_hours']
+                    round(row['24_hours'], 2)  # Round the value
                 ))
             if row['30_days'] is not None:
                 cursor.execute(insert_query, (
                     row['ticker'],
                     today,
                     '30_days',
-                    row['30_days']
+                    round(row['30_days'], 2)  # Round the value
                 ))
             if row['1_year'] is not None:
                 cursor.execute(insert_query, (
                     row['ticker'],
                     today,
                     '1_year',
-                    row['1_year']
+                    round(row['1_year'], 2)  # Round the value
                 ))
 
         # Insert top gainers and losers data
@@ -174,7 +174,7 @@ def store_kpis_to_db(kpis):
                 row['ticker'],
                 today,
                 'Gainers',
-                row['24_hours']
+                round(row['24_hours'], 2)  # Round the value
             ))
         
         for _, row in kpis['Top_Losers'].iterrows():
@@ -182,7 +182,7 @@ def store_kpis_to_db(kpis):
                 row['ticker'],
                 today,
                 'Losers',
-                row['24_hours']
+                round(row['24_hours'], 2)  # Round the value
             ))
 
         # Insert today's data
@@ -195,10 +195,10 @@ def store_kpis_to_db(kpis):
             cursor.execute(insert_query, (
                 row['ticker'],
                 row['date'],
-                row['open'],
-                row['high'],
-                row['low'],
-                row['close'],
+                round(row['open'], 2),  # Round the values
+                round(row['high'], 2),
+                round(row['low'], 2),
+                round(row['close'], 2),
                 row['volume']
             ))
 
