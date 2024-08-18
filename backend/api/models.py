@@ -32,7 +32,7 @@ class DailyClosingPrice(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.ticker} - {self.date} - {self.close}"  # String representation of the object
+        return f"{self.ticker} - {self.date} - {self.close} - {self.name}"  # String representation of the object
 
 # Model for storing price change percentages over different periods
 class PriceChangePercentage(models.Model):
