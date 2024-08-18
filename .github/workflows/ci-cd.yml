@@ -3,7 +3,7 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - main  # Specify the branch to monitor, e.g., 'main'
+      - deployment  # Specify the branch to monitor, e.g., 'main'
 
 jobs:
   build-backend:
