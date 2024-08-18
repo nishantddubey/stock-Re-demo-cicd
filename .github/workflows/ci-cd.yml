@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-backend:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]  # Use the self-hosted runner
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -29,7 +29,7 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/backend-app:$SHORT_SHA
 
   build-frontend:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]  # Use the self-hosted runner
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
