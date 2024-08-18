@@ -18,3 +18,8 @@ build/
 # Ignore version control directories
 .git
 .gitignore
+node_modules
+npm-debug.log
+Dockerfile
+.dockerignore
+README.md

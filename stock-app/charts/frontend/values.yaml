@@ -2,7 +2,7 @@ replicaCount: 2
 
 image:
   repository: nishantddubey/frontend-app       #nishantddubey/stock-frontend
-  tag: "2d474568d944c10d50d51c2eb782a33bd93b0917"  #"3"
+  tag: "1"  #"3"
 
 service:
   type: NodePort
