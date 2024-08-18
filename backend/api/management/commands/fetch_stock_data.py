@@ -17,7 +17,7 @@ class Command(BaseCommand):
             stock_data = {}
             for ticker in tickers:
                 stock = yf.Ticker(ticker)
-                data = stock.history(period="1y", interval="1d")
+                data = stock.history(period="1d", interval="1d")
                 stock_data[ticker] = data
             return stock_data
 
