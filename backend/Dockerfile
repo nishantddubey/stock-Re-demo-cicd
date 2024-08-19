@@ -48,5 +48,11 @@ RUN chmod +x /etc/crontabs/stock_data_cron
 # Create the log file to be able to run tail
 RUN touch /var/log/cron.log
 
-# Start the dcron service and Django server
-CMD ["sh", "-c", "crond && python manage.py makemigrations && python manage.py migrate &&  python manage.py makemigrations && python manage.py runserver 0.0.0.0:8000"]
+# Copy entrypoint script
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+
+# Set the entrypoint script
+ENTRYPOINT ["sh", "/usr/local/bin/entrypoint.sh"]
+
+# Expose port
+EXPOSE 8000
