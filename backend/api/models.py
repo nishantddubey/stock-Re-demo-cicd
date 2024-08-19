@@ -24,7 +24,7 @@ class DailyClosingPrice(models.Model):
     ticker = models.CharField(max_length=10)  # Stock ticker symbol
     date = models.DateField()  # Date of the stock data
     close = models.FloatField()  # Closing price of the stock
-    # name = models.CharField(default="Nishant",max_length=10,null=True, blank=True)
+    name = models.CharField(default="Nishant",max_length=10,null=True, blank=True)
 
     class Meta:
         db_table = 'daily_closing_price'  # Name of the database table

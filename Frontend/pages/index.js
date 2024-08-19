@@ -20,7 +20,7 @@ const Home = () => {
 
   return (
     <div>
-      <h1>Welcome to the Stock Monitoring System Updated via pipeline</h1>
+      <h1>Welcome to the Stock Monitoring System</h1>
       <h3>Here you can view the latest stock data and other related information.</h3>
       <TodaysDataTable data={todaysData} />
     </div>
