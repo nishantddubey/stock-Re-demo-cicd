@@ -44,6 +44,7 @@ class PriceChangePercentage(models.Model):
     date = models.DateField()  # Date of the stock data
     change_period = models.CharField(max_length=20)  # Period of price change (e.g., '24_hours')
     percentage_change = models.FloatField()  # Percentage change in price
+    
     class Meta:
         db_table = 'price_change_percentage'  # Name of the database table
         indexes = [
