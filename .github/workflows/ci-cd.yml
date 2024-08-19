@@ -46,21 +46,43 @@ jobs:
         with:
           version: 'v3.8.0'  # Specify the Helm version you need
 
-      - name: Retry Helm upgrade
+      - name: Check Helm release status and install/upgrade
         run: |
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-5)
+          RELEASE_NAME="stock-app"
+          RELEASE_NAMESPACE="default"
           RETRIES=5
           COUNT=0
+
+          function helm_action {
+            if helm list -n $RELEASE_NAMESPACE | grep -q "^$RELEASE_NAME"; then
+              echo "Release $RELEASE_NAME found. Upgrading..."
+              helm upgrade $RELEASE_NAME /home/sigmoid/Desktop/stock-app/stock-monitoring-system/stock-app \
+                --namespace $RELEASE_NAMESPACE \
+                --set backend.image.tag=$SHORT_SHA \
+                --set frontend.image.tag=$SHORT_SHA
+            else
+              echo "Release $RELEASE_NAME not found. Installing..."
+              helm install $RELEASE_NAME /home/sigmoid/Desktop/stock-app/stock-monitoring-system/stock-app \
+                --namespace $RELEASE_NAMESPACE \
+                --set backend.image.tag=$SHORT_SHA \
+                --set frontend.image.tag=$SHORT_SHA
+            fi
+          }
+
           until [ $COUNT -ge $RETRIES ]
           do
-            helm install stock-app /home/sigmoid/Desktop/stock-app/stock-monitoring-system/stock-app \
-              --set backend.image.tag=$SHORT_SHA \
-              --set frontend.image.tag=$SHORT_SHA && break
-            COUNT=$[$COUNT+1]
+            helm_action && break
+            COUNT=$((COUNT+1))
             echo "Retrying... ($COUNT/$RETRIES)"
             sleep 30
           done
+
           if [ $COUNT -eq $RETRIES ]; then
-            echo "Helm install failed after $RETRIES attempts"
+            echo "Helm install/upgrade failed after $RETRIES attempts"
             exit 1
           fi
+
+      - name: Verify Helm upgrade/install
+        run: |
+          helm status stock-app
