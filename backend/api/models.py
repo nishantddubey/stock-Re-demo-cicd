@@ -24,7 +24,6 @@ class DailyClosingPrice(models.Model):
     ticker = models.CharField(max_length=10)  # Stock ticker symbol
     date = models.DateField()  # Date of the stock data
     close = models.FloatField()  # Closing price of the stock
-    name = models.CharField(default="Nishant",max_length=10,null=True, blank=True)
 
 
 
@@ -43,7 +42,6 @@ class PriceChangePercentage(models.Model):
     date = models.DateField()  # Date of the stock data
     change_period = models.CharField(max_length=20)  # Period of price change (e.g., '24_hours')
     percentage_change = models.FloatField()  # Percentage change in price
-    user = models.CharField(null=True,blank=True,max_length=10)
     class Meta:
         db_table = 'price_change_percentage'  # Name of the database table
         indexes = [
