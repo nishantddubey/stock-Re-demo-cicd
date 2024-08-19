@@ -53,7 +53,7 @@ jobs:
           COUNT=0
           until [ $COUNT -ge $RETRIES ]
           do
-            helm upgrade stock-app /home/sigmoid/Desktop/stock-app/stock-monitoring-system/stock-app \
+            helm install stock-app /home/sigmoid/Desktop/stock-app/stock-monitoring-system/stock-app \
               --set backend.image.tag=$SHORT_SHA \
               --set frontend.image.tag=$SHORT_SHA && break
             COUNT=$[$COUNT+1]
@@ -61,6 +61,6 @@ jobs:
             sleep 30
           done
           if [ $COUNT -eq $RETRIES ]; then
-            echo "Helm upgrade failed after $RETRIES attempts"
+            echo "Helm install failed after $RETRIES attempts"
             exit 1
           fi
