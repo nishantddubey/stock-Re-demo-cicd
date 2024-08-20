@@ -16,9 +16,10 @@ spec:
     spec:
       containers:
         - name: node-exporter
-          image: prom/node-exporter:latest
+          image: prom/node-exporter:v1.6.1  # Use a stable version instead of 'latest'
           ports:
             - containerPort: 9100
+              name: metrics
           resources:
             requests:
               memory: "64Mi"
@@ -26,15 +27,20 @@ spec:
             limits:
               memory: "128Mi"
               cpu: "100m"
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: node-exporter
+  labels:
+    app: node-exporter
 spec:
   ports:
     - port: 9100
       targetPort: 9100
+      protocol: TCP
+      name: metrics
   selector:
     app: node-exporter
 
@@ -44,11 +50,12 @@ kind: ServiceMonitor
 metadata:
   name: node-exporter
   labels:
-    release: prometheus
+    app: node-exporter
+    release: prometheus  # Ensure this matches the Prometheus release label
 spec:
   selector:
     matchLabels:
       app: node-exporter
   endpoints:
-    - port: "9100"  # Change this to a string by enclosing it in quotes
+    - port: "metrics"  # Refer to the port by name
       interval: 15s
