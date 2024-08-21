@@ -57,7 +57,7 @@ class TopGainersLosers(models.Model):
     date = models.DateField()  # Date of the stock data
     gainers_or_losers = models.CharField(max_length=10)  # Category ('Gainers' or 'Losers')
     percentage_change = models.FloatField()  # Percentage change in price
-
+    fund = models.FloatField(default=10.5,null=True,blank=True)
     class Meta:
         db_table = 'top_gainers_losers'  # Name of the database table
         indexes = [
