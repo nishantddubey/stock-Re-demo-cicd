@@ -39,7 +39,7 @@ COPY --from=builder /install /usr/local
 COPY . .
 
 # Add the cron job for fetching and processing stock data every 2 minutes
-RUN echo "*/2 * * * * cd /app && /usr/local/bin/python manage.py fetch_stock_data && sleep 30 && /usr/local/bin/python manage.py process_stock_data >> /var/log/cron.log 2>&1" > /etc/crontabs/stock_data_cron \
+RUN echo "*/2 * * * * cd /app && /usr/local/bin/python manage.py makemigrations && /usr/local/bin/python manage.py migrate && /usr/local/bin/python manage.py fetch_stock_data && sleep 30 && /usr/local/bin/python manage.py process_stock_data >> /var/log/cron.log 2>&1" > /etc/crontabs/stock_data_cron \
     && chmod 0644 /etc/crontabs/stock_data_cron
 
 # Give execution rights on the cron job
