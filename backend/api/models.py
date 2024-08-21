@@ -24,7 +24,7 @@ class DailyClosingPrice(models.Model):
     ticker = models.CharField(max_length=10)  # Stock ticker symbol
     date = models.DateField()  # Date of the stock data
     close = models.FloatField()  # Closing price of the stock
-
+    prassana = models.CharField(max_length=10,default="prassana")
 
 
     class Meta:
