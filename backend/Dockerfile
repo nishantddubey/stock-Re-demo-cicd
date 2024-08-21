@@ -50,4 +50,4 @@ RUN touch /var/log/cron.log
 
 
 # Start the dcron service, create migrations, apply migrations, and start the Django server
-CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && crond && exec python manage.py runserver 0.0.0.0:8000"]
+CMD ["sh", "-c", "rm -rf api/migrations/0*.py && python manage.py makemigrations && python manage.py migrate && crond && exec python manage.py runserver 0.0.0.0:8000"]
