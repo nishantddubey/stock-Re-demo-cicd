@@ -49,5 +49,5 @@ RUN chmod +x /etc/crontabs/stock_data_cron
 RUN touch /var/log/cron.log
 
 
-# Start the dcron service and Django server
-CMD ["sh", "-c", "python manage.py migrate && crond &&  exec python manage.py runserver 0.0.0.0:8000"]
+# Start the dcron service, create migrations, apply migrations, and start the Django server
+CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && crond && exec python manage.py runserver 0.0.0.0:8000"]
