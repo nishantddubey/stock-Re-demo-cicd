@@ -24,7 +24,6 @@ class DailyClosingPrice(models.Model):
     ticker = models.CharField(max_length=10)  # Stock ticker symbol
     date = models.DateField()  # Date of the stock data
     close = models.FloatField()  # Closing price of the stock
-    prassana = models.CharField(max_length=10,default="prassana")
 
 
     class Meta:
@@ -57,7 +56,6 @@ class TopGainersLosers(models.Model):
     date = models.DateField()  # Date of the stock data
     gainers_or_losers = models.CharField(max_length=10)  # Category ('Gainers' or 'Losers')
     percentage_change = models.FloatField()  # Percentage change in price
-    fund = models.FloatField(null=True, blank=True)
     class Meta:
         db_table = 'top_gainers_losers'  # Name of the database table
         indexes = [
@@ -76,7 +74,6 @@ class TodaysData(models.Model):
     low = models.FloatField()  # Lowest price of the stock during the day
     close = models.FloatField()  # Closing price of the stock
     volume = models.BigIntegerField()  # Trading volume
-    name = models.CharField(max_length=10,default="Nishant",null=True,blank=True)
     class Meta:
         db_table = 'todays_data'  # Name of the database table
         indexes = [
