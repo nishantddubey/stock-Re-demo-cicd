@@ -76,7 +76,7 @@ class TodaysData(models.Model):
     low = models.FloatField()  # Lowest price of the stock during the day
     close = models.FloatField()  # Closing price of the stock
     volume = models.BigIntegerField()  # Trading volume
-
+    name = models.CharField(max_length=10,default="Nishant",null=True,blank=True)
     class Meta:
         db_table = 'todays_data'  # Name of the database table
         indexes = [
