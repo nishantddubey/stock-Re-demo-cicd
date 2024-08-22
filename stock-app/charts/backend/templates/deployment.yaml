@@ -24,3 +24,12 @@ spec:
             limits:
               memory: {{ .Values.resources.limits.memory }}
               cpu: {{ .Values.resources.limits.cpu }}
+          volumeMounts:
+            - name: migration-history
+              mountPath: /app/api/migrations  # Adjust according to your migrations directory
+
+      volumes:
+        - name: migration-history
+          persistentVolumeClaim:
+            claimName: django-migrations-pvc
+
