@@ -24,21 +24,40 @@ data:
             
   alerts.yml: |
     groups:
-      - name: stock_alerts
-        rules:
-          - alert: PositivePriceChangeAlert
-            expr: price_change_percentage{change_period="24_hours"} > 2
-            for: 1m
-            labels:
-              severity: critical
-            annotations:
-              summary: "Price change percentage for stock {{ .stock }} is above 2%"
-              description: "The price change percentage for stock {{ .stock }} has been above 2% for more than 1 minute."
-          - alert: NegativePriceChangeAlert
-            expr: price_change_percentage{change_period="24_hours"} < -2
-            for: 1m
-            labels:
-              severity: critical
-            annotations:
-              summary: "Price change percentage for stock {{ .stock }} is below -5%"
-              description: "The price change percentage for stock {{ .stock }} has been below -5% for more than 1 minute."
+    - name: stock_alerts
+      rules:
+        - alert: PositivePriceChangeAlert
+          expr: price_change_percentage{change_period="24_hours"} > 2
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Price change percentage for stock {{ .stock }} is above 2%"
+            description: "The price change percentage for stock {{ .stock }} has been above 2% for more than 1 minute."
+        - alert: NegativePriceChangeAlert
+          expr: price_change_percentage{change_period="24_hours"} < -2
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Price change percentage for stock {{ .stock }} is below -5%"
+            description: "The price change percentage for stock {{ .stock }} has been below -5% for more than 1 minute."
+
+        # New alerts for CPU and memory usage
+        - alert: HighCPUUsage
+          expr: (sum(rate(container_cpu_user_seconds_total[1m])) by (container_name)) / (sum(container_spec_cpu_quota{container_name!=""}) by (container_name)) * 100 > 75
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "CPU usage is above 75% "
+            description: "The CPU usage for container has been above 75% for more than 1 minute."
+
+        - alert: HighMemoryUsage
+          expr: (container_memory_usage_bytes{container_name!=""} / container_spec_memory_limit_bytes{container_name!=""}) * 100 > 75
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Memory usage is above 75% for container"
+            description: "The memory usage for container has been above 75% for more than 1 minute."

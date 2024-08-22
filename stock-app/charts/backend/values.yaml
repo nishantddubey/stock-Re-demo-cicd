@@ -2,7 +2,7 @@ replicaCount: 2
 
 image:
   repository: nishantddubey/backend-app
-  tag: "f9718"
+  tag: "c5ffa"
 
 service:
   type: NodePort
