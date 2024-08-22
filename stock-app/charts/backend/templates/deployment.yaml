@@ -24,11 +24,3 @@ spec:
             limits:
               memory: {{ .Values.resources.limits.memory }}
               cpu: {{ .Values.resources.limits.cpu }}
-          volumeMounts:
-            - name: migration-history
-              mountPath: /app/api/migrations  # Mount to this path in the container
-      volumes:
-        - name: migration-history
-          hostPath:
-            path:  /home/sigmoid/Desktop/migration-backup # Replace this with your local path
-            type: Directory
