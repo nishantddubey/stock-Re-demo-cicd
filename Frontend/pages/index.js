@@ -22,7 +22,6 @@ const Home = () => {
     <div>
       <h1>Welcome to the Stock Monitoring System</h1>
       <h3>Here you can view the latest stock data and other related information.</h3>
-      <h4>Showing changes done by pipeline</h4>
       <TodaysDataTable data={todaysData} />
     </div>
   );
