@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand
 import yfinance as yf
 from django.db import connection
-from datetime import datetime, timedelta
 
 class Command(BaseCommand):
     help = 'Fetch stock data and store it in the database'
@@ -14,11 +13,11 @@ class Command(BaseCommand):
             'TM', 'NKE', 'V', 'MA', 'JPM'
         ]
 
-        def fetch_stock_data(tickers, start_date, end_date):
+        def fetch_stock_data(tickers):
             stock_data = {}
             for ticker in tickers:
                 stock = yf.Ticker(ticker)
-                data = stock.history(start=start_date, end=end_date, interval="1d")
+                data = stock.history(period="1d", interval="1d")
                 stock_data[ticker] = data
             return stock_data
 
@@ -68,26 +67,9 @@ class Command(BaseCommand):
                         volume
                     ))
 
-        def get_last_available_date(cursor):
-            query = "SELECT MAX(date) FROM stocks"
-            cursor.execute(query)
-            result = cursor.fetchone()
-            return result[0] if result[0] else None
-
-        end_date = datetime.now()
-        last_available_date = None
+        stock_data = fetch_stock_data(tickers)
 
         with connection.cursor() as cursor:
             if create_stock_data_table(cursor):
-                last_available_date = get_last_available_date(cursor)
-
-        if last_available_date:
-            start_date = last_available_date + timedelta(days=1)
-        else:
-            start_date = end_date - timedelta(days=30)
-
-        stock_data = fetch_stock_data(tickers, start_date, end_date)
-
-        with connection.cursor() as cursor:
-            insert_stock_data(cursor, stock_data)
-            connection.commit()
+                insert_stock_data(cursor, stock_data)
+                connection.commit()
